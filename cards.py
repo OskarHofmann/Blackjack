@@ -23,8 +23,8 @@ class CardValues(Enum):
     King = auto() # 13
 
 # create lists of all possible suits and values
-SUIT_LIST = list(CardSuits)
-VALUE_LIST = list(CardValues)
+ALL_SUITS = tuple(CardSuits)
+ALL_VALUES = tuple(CardValues)
 
 class Card:
     def __init__(self, suit: CardSuits, value: CardValues):
@@ -55,4 +55,4 @@ class Shoe(Deck):
     
 # get independent random cards without tracking a whole deck/shoe (equal to a shoe with infinite decks)
 def get_random_card():
-    return Card(random.choice(SUIT_LIST), random.choice(VALUE_LIST))
+    return Card(random.choice(ALL_SUITS), random.choice(ALL_VALUES))
