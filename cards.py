@@ -36,13 +36,16 @@ class Deck:
         if shuffle:
             random.shuffle(self.cards)
 
-# several decks shuffled together
-class Shoe:
+    def draw(self):
+        return self.cards.pop()
+
+# several decks shuffled together (inherits draw function from Deck class)
+class Shoe(Deck):
     def __init__(self, number_of_decks: int = 8):
         self.cards = []
         for _ in range(number_of_decks):
             # create unshuffled deck as the whole shoe is shuffled later
             deck = Deck(shuffle = False) 
-            self.cards.append(deck)
+            self.cards += deck.cards
         random.shuffle(self.cards)
     
