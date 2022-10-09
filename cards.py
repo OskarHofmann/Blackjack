@@ -31,6 +31,9 @@ class Card:
         self.suit = suit
         self.value = value
 
+    def __repr__(self):
+        return f"Card({self.suit.name}, {self.value.name}"
+
     def __str__(self):
         return f"{self.value.name} of {self.suit.name}"
 
@@ -46,6 +49,7 @@ class Deck:
 # several decks shuffled together (inherits draw function from Deck class)
 class Shoe(Deck):
     def __init__(self, number_of_decks: int = 8):
+        self.MAX_CARDS = number_of_decks * 52
         self.cards = []
         for _ in range(number_of_decks):
             # create unshuffled deck as the whole shoe is shuffled later
