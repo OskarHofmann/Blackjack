@@ -23,6 +23,10 @@ class Hand():
     def __repr__(self):
         return str(self.cards)
 
+    def __str__(self):
+        cards = [str(card) for card in self.cards]
+        return ", ".join(cards)
+
     def draw_card(self, shoe: cards.Deck = None):
         if shoe:
             card = shoe.draw()
@@ -61,11 +65,15 @@ class Game():
         else:
             self.shoe = cards.Shoe(n_decks)
         
-    def new_round(self):
-        round = self.Round(self.shoe)
-        print(round.player_hands)
-        print(round.dealer_hand)
-        return round
+        self._running = True
+        self.money = 0
+
+        while(self._running):
+            round = self.Round()
+            self._running, money_won = round.play()
+            self.money += money_won
+            # self.UI.money = self.money    
+
         
     class Round():
         def __init__(self, shoe: cards.Deck = None):
@@ -78,8 +86,18 @@ class Game():
             self.dealer_hand.draw_card(self.shoe)
             self.player_hands[0].draw_card(self.shoe)
             self.dealer_hand.draw_card(self.shoe)
-            
+
+        def play(self):                   
             #self.UI.update()
+            print(self.player_hands[0])
+            print(self.dealer_hand.cards[0])
+
+            for player_hand in self.player_hands:
+                pass    
+
+            return False, 0
+
+
 
     
     
