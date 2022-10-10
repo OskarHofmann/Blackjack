@@ -1,5 +1,8 @@
-import cards
+import game_logic
+
 
 if __name__ == '__main__':
-   for _ in range(10):
-        print(cards.get_random_card())
+   game = game_logic.Game(n_decks= 5)
+   
+
+
