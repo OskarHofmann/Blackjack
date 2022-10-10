@@ -32,10 +32,18 @@ class Hand():
 
     def get_points(self):
         total = 0
+        n_aces = 0
         for card in self.cards:
             total += POINT_VALUES[card.value.name]
-            # TODO: logic for counting Ace as 1 if counting it as 11 would lead to total points > 21
-            
+            # count aces as each ace can be counted as 1 if total is above 21
+            if card.value.name == "Ace":
+                n_aces += 1
+
+        if total > 21:
+            # count ace(s) as 1 instead of 11 (-10) until total <= 21 or no aces left
+            while n_aces > 0 and total > 21:
+                total -= 10
+                n_aces -= 1              
 
         return total
     
