@@ -118,9 +118,9 @@ class Game():
 
             for player_hand in self.player_hands:
                 # self.UI.user_input()
-                round_over = False
+                hand_over = False
 
-                while not round_over:
+                while not hand_over:
 
                     if player_hand.is_splittable():
                         choices = self.PLAYER_CHOICES_WITH_SPLIT
