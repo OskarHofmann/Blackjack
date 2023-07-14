@@ -27,28 +27,28 @@ ALL_SUITS = tuple(CardSuits)
 ALL_VALUES = tuple(CardValues)
 
 class Card:
-    def __init__(self, suit: CardSuits, value: CardValues):
+    def __init__(self, suit: CardSuits, value: CardValues) -> None:
         self.suit = suit
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Card({self.suit.name}, {self.value.name}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.value.name} of {self.suit.name}"
 
 class Deck:
-    def __init__(self, shuffle: bool = True):
+    def __init__(self, shuffle: bool = True) -> None:
         self.cards = [Card(suit, value) for suit in CardSuits for value in CardValues]
         if shuffle:
             random.shuffle(self.cards)
 
-    def draw(self):
+    def draw(self) -> Card:
         return self.cards.pop()
 
 # several decks shuffled together (inherits draw function from Deck class)
 class Shoe(Deck):
-    def __init__(self, number_of_decks: int = 8):
+    def __init__(self, number_of_decks: int = 8) -> None:
         self.MAX_CARDS = number_of_decks * 52
         self.cards = []
         for _ in range(number_of_decks):
@@ -58,5 +58,5 @@ class Shoe(Deck):
         random.shuffle(self.cards)
     
 # get independent random cards without tracking a whole deck/shoe (equal to a shoe with infinite decks)
-def get_random_card():
+def get_random_card() -> Card:
     return Card(random.choice(ALL_SUITS), random.choice(ALL_VALUES))

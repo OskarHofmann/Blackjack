@@ -1,5 +1,6 @@
 import cards
 from enum import Enum, auto
+from typing import Tuple
 
 POINT_VALUES = {
     cards.CardValues.Ace: 11,
@@ -23,25 +24,25 @@ class UserActions(Enum):
     SPLIT = 3
 
 class Hand():
-    def __init__(self):
+    def __init__(self) -> None:
         self.cards = []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.cards)
 
-    def __str__(self):
+    def __str__(self) -> str:
         cards = [str(card) for card in self.cards]
         card_str = ", ".join(cards)
         return card_str + f' ({self.get_points()})'
 
-    def draw_card(self, shoe: cards.Deck = None):
+    def draw_card(self, shoe: cards.Deck = None) -> None:
         if shoe:
             card = shoe.draw()
         else:
             card = cards.get_random_card()
         self.cards.append(card)
 
-    def get_points(self):
+    def get_points(self) -> int:
         total = 0
         n_aces = 0
         for card in self.cards:
@@ -58,7 +59,7 @@ class Hand():
 
         return total
     
-    def is_splittable(self): 
+    def is_splittable(self) -> bool: 
         # hand is splittable if and only if it contains two cards with the same value
         if len(self.cards) != 2:
             return False
@@ -70,7 +71,7 @@ class Hand():
 class Game():   
     
     # n_decks = 0 (default) draws each card completely randomly and independently
-    def __init__(self, n_decks: int = 0):       
+    def __init__(self, n_decks: int = 0) -> None:       
 
         if not isinstance(n_decks, int) or n_decks < 0:
             raise ValueError('n_decks must be an integer >= 0')
@@ -95,7 +96,7 @@ class Game():
         PLAYER_CHOICES_WITHOUT_SPLIT = ['1: Draw', '2: Hold']
         PLAYER_CHOICES_WITH_SPLIT = ['1: Draw', '2: Hold', '3: Split']
 
-        def __init__(self, shoe: cards.Deck = None):
+        def __init__(self, shoe: cards.Deck = None) -> None:
             # a player can have several hands when he splits, the dealer always has 1 hand
             self.player_hands = [Hand()]
             self.dealer_hand = Hand()
@@ -110,7 +111,7 @@ class Game():
             # Drawing it later also allows to use standard __str__ method the dealer's hand 
             # self.dealer_hand.draw_card(self.shoe)
 
-        def play(self):                   
+        def play(self) -> Tuple[bool, int]:                   
             # self.UI.update()
             print("Player: ", self.player_hands[0])
             print("Dealer: ", self.dealer_hand)
