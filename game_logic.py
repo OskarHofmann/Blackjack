@@ -41,7 +41,7 @@ class Hand():
         for card in self.cards:
             total += POINT_VALUES[card.value.name]
             # count aces as each ace can be counted as 1 if total is above 21
-            if card.value.name == "Ace":
+            if card.value == cards.CardValues.Ace:
                 n_aces += 1
 
         if total > 21:
@@ -56,7 +56,7 @@ class Hand():
         # hand is splittable if and only if it contains two cards with the same value
         if len(self.cards) != 2:
             return False
-        return (POINT_VALUES[self.cards[0].value.name] == POINT_VALUES[self.cards[1].value.name])
+        return (POINT_VALUES[self.cards[0].value] == POINT_VALUES[self.cards[1].value])
 
     
 
