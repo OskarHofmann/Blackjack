@@ -1,34 +1,27 @@
 from abc import ABC, abstractmethod
 import os
-from game_logic import UserActions
+from game_logic import UserActions, GameState
 
-class UserInterface(ABC):
-
-    def __init__(self):
-        self.game_stats = {
-            "player hands": None,
-            "dealer hand": None,
-            "money": 0
-        }
+class UserInterface(ABC):    
 
     @abstractmethod
-    def update_hand(self):
+    def update_hand(self, game_state: GameState):
         ...
 
     @abstractmethod
-    def game_summary(self):
+    def game_summary(self, game_state: GameState):
         ...
 
     @abstractmethod
-    def show_player_options_hand(self):
+    def show_player_options_hand(self, game_state: GameState):
         ...
 
     @abstractmethod
-    def get_user_input_hand(self):
+    def get_user_input_hand(self, game_state: GameState):
         ...
 
     @abstractmethod
-    def get_user_input_round_end(self):
+    def get_user_input_round_end(self, game_state: GameState):
         ...
 
     
