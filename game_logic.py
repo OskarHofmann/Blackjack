@@ -64,6 +64,14 @@ class Hand():
         if len(self.cards) != 2:
             return False
         return (POINT_VALUES[self.cards[0].value] == POINT_VALUES[self.cards[1].value])
+    
+
+    def is_bust(self) -> bool:
+        return (self.get_points > 21)
+    
+    
+    def is_blackjack(self) -> bool:
+        return ((len(self.cards) == 2) and (self.get_points == 21))
 
     
 
@@ -134,6 +142,16 @@ class Game():
                 pass    
 
             return False, 0
+        
+
+        def split_hand(self):
+            pass
+
+        def evaluate_hands(self):
+            pass
+
+
+
 
 
 
