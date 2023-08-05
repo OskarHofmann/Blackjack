@@ -82,6 +82,12 @@ class GameState():
     money: int = 0
     player_hands: Optional[list[Hand]] = None
     dealer_hand: Optional[Hand] = None
+    current_hand: int = -1
+
+    def reset_hands(self) -> None:
+        self.player_hands = None
+        self.dealer_hand = None
+        self.current_hand = -1
 
 
 class Game():   
@@ -104,6 +110,7 @@ class Game():
             round = self.Round(self.game_state, self.user_interface, self.shoe)
             self._running, money_won = round.play()
             self.game_state.money += money_won
+            self.game_state.reset_hands()
             # self.UI.money = self.money    
 
         
