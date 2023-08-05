@@ -1,4 +1,4 @@
 # Blackjack
-Blackjack game that can be played via a GUI or the console or can be accessed by a neural network
+Blackjack game that can be played via the console. GUI can be implemented by extended the UserInterface class (implementation is planned for the future).
 
 <<< still in development >>>
