@@ -1,6 +1,7 @@
 import cards
 from enum import Enum, auto
-from typing import Tuple
+from typing import Tuple, Optional
+from dataclasses import dataclass
 
 POINT_VALUES = {
     cards.CardValues.Ace: 11,
@@ -22,6 +23,7 @@ class UserActions(Enum):
     DRAW = 1
     HOLD = 2
     SPLIT = 3
+
 
 class Hand():
     def __init__(self) -> None:
@@ -73,7 +75,12 @@ class Hand():
     def is_blackjack(self) -> bool:
         return ((len(self.cards) == 2) and (self.get_points == 21))
 
-    
+
+@dataclass
+class GameState():
+    money: int = 0
+    player_hands: Optional[list[Hand]] = None
+    dealer_hand: Optional[Hand] = None
 
 
 class Game():   
@@ -104,11 +111,12 @@ class Game():
         PLAYER_CHOICES_WITHOUT_SPLIT = ['1: Draw', '2: Hold']
         PLAYER_CHOICES_WITH_SPLIT = ['1: Draw', '2: Hold', '3: Split']
 
-        def __init__(self, shoe: cards.Deck = None) -> None:
+        def __init__(self, game_state: GameState, shoe: cards.Deck = None) -> None:
             # a player can have several hands when he splits, the dealer always has 1 hand
             self.player_hands = [Hand()]
             self.dealer_hand = Hand()
             self.shoe = shoe
+            self.game_state = game_state
             
             self.player_hands[0].draw_card(self.shoe)
             self.dealer_hand.draw_card(self.shoe)
@@ -149,6 +157,10 @@ class Game():
 
         def evaluate_hands(self):
             pass
+
+        def update_game_state(self):
+            pass
+
 
 
 

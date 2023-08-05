@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import os
+from game_logic import UserActions
 
 class UserInterface(ABC):
 
