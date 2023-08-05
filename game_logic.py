@@ -2,6 +2,7 @@ import cards
 from enum import Enum, auto
 from typing import Tuple, Optional
 from dataclasses import dataclass
+from user_interfaces import UserInterface
 
 POINT_VALUES = {
     cards.CardValues.Ace: 11,
@@ -86,7 +87,7 @@ class GameState():
 class Game():   
     
     # n_decks = 0 (default) draws each card completely randomly and independently
-    def __init__(self, n_decks: int = 0) -> None:       
+    def __init__(self, user_interface: UserInterface, n_decks: int = 0) -> None:       
 
         if not isinstance(n_decks, int) or n_decks < 0:
             raise ValueError('n_decks must be an integer >= 0')
@@ -95,13 +96,14 @@ class Game():
         else:
             self.shoe = cards.Shoe(n_decks)
         
+        self.user_interface = user_interface
         self._running = True
-        self.money = 0
-
+        self.game_state = GameState()
+        
         while(self._running):
-            round = self.Round()
+            round = self.Round(self.game_state, self.user_interface, self.shoe)
             self._running, money_won = round.play()
-            self.money += money_won
+            self.game_state.money += money_won
             # self.UI.money = self.money    
 
         
@@ -111,12 +113,13 @@ class Game():
         PLAYER_CHOICES_WITHOUT_SPLIT = ['1: Draw', '2: Hold']
         PLAYER_CHOICES_WITH_SPLIT = ['1: Draw', '2: Hold', '3: Split']
 
-        def __init__(self, game_state: GameState, shoe: cards.Deck = None) -> None:
+        def __init__(self, game_state: GameState, user_interface: UserInterface, shoe: cards.Deck = None) -> None:
             # a player can have several hands when he splits, the dealer always has 1 hand
             self.player_hands = [Hand()]
             self.dealer_hand = Hand()
             self.shoe = shoe
             self.game_state = game_state
+            self.ui = user_interface
             
             self.player_hands[0].draw_card(self.shoe)
             self.dealer_hand.draw_card(self.shoe)
