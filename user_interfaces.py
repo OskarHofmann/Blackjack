@@ -11,8 +11,26 @@ class UserInterface(ABC):
         }
 
     @abstractmethod
-    def update(self):
+    def update_hand(self):
         ...
+
+    @abstractmethod
+    def game_summary(self):
+        ...
+
+    @abstractmethod
+    def show_player_options_hand(self):
+        ...
+
+    @abstractmethod
+    def get_user_input_hand(self):
+        ...
+
+    @abstractmethod
+    def get_user_input_round_end(self):
+        ...
+
+    
 
 class ConsoleOutput(UserInterface):
 
