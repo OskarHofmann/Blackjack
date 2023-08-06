@@ -127,6 +127,8 @@ class Game():
             self.game_state.money += money_won
             self.game_state.reset_hands()
             # self.UI.money = self.money    
+        
+        self.user_interface.game_summary()
 
         
     class Round():        
