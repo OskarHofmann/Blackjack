@@ -165,7 +165,7 @@ class Game():
 
                     if user_input == UserActionsHand.DRAW:
                         player_hand.draw_card(self.shoe)
-                        hand_over = player_hand.is_bust()
+                        hand_over = (player_hand.is_bust() or player_hand.is_blackjack())
                     elif user_input == UserActionsHand.HOLD:
                         hand_over = True
                     elif user_input == UserActionsHand.SPLIT:
