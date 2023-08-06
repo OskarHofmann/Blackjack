@@ -3,6 +3,7 @@ from enum import Enum, auto
 from typing import Tuple, Optional
 from dataclasses import dataclass
 from user_interfaces import UserInterface
+import numpy as np
 
 POINT_VALUES = {
     cards.CardValues.Ace: 11,
@@ -85,7 +86,7 @@ class Hand():
 
 @dataclass
 class GameState():
-    money: int = 0
+    money: float = 0
     player_hands: Optional[list[Hand]] = None
     dealer_hand: Optional[Hand] = None
     current_hand: int = -1
@@ -201,10 +202,33 @@ class Game():
 
             # add new hand to list of player hands
             self.game_state.player_hands.append(new_hand)
-            
 
-        def evaluate_hands(self) -> list[int]:
-            pass
+
+        def evaluate_hands(self) -> list[float]:
+            results = []
+            dealer_hand = self.game_state.dealer_hand
+            
+            # go through all rules for BlackJack regarding winning/loosing
+            for hand in self.game_state.player_hands:
+                # bust hand always looses player bet
+                if hand.is_bust():
+                    winning = -1
+                # Blackjack without dealer Blackjack wins 3:2
+                elif hand.is_blackjack() and not dealer_hand.is_blackjack():
+                    winnings = 1.5
+                # player wins when dealer is bust (if player is also bust, player looses, but already covered in previous if statement)
+                elif dealer_hand.is_bust():
+                    winning = 1
+                # dealer Blackjack wins if player does not have his own blackjack
+                elif  dealer_hand.is_blackjack and not hand.is_blackjack():
+                    winnings = -1
+                # otherwise compare point values (both player and dealer having a Blackjack is the same as both just having 21)
+                else:
+                    winnings = 1 * np.sign(hand.get_points() - dealer_hand.get_points()) # +1 if player > dealer, -1 if player < dealer, 0 otherweise
+            
+                results.append(winnings)
+            
+            return results
 
         def draw_dealer(self):
             pass
