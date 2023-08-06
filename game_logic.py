@@ -95,9 +95,12 @@ class GameState():
         self.dealer_hand = None
         self.current_hand = -1
 
-    def update_hands(self, player_hands: list[Hand], dealer_hand: Hand) -> None:
-        self.player_hands = player_hands
-        self.dealer_hand = dealer_hand
+    # def update_hands(self, player_hands: list[Hand], dealer_hand: Hand) -> None:
+    #     self.player_hands = player_hands
+    #     self.dealer_hand = dealer_hand
+
+    def get_current_hand(self) -> Hand:
+        return self.player_hands[self.current_hand]
 
 
 
@@ -153,7 +156,7 @@ class Game():
             # iterate over each hand (list of hands can grow when splitting)
             while self.game_state.current_hand < len(self.game_state.player_hands):
                 hand_over = False
-                player_hand = self.game_state.player_hands[self.game_state.current_hand]
+                player_hand = self.game_state.get_current_hand()
 
                 while not hand_over:
                     self.ui.show_hand(self.game_state)
@@ -169,9 +172,8 @@ class Game():
                     else:
                         raise RuntimeError('Unexpected user action')
                     
-                    self.update_game_state()
-                
                 self.ui.hand_summary()
+                self.game_state.current_hand += 1
                     
             self.draw_dealer()
             money_won = sum(self.evaluate_hands())
@@ -184,13 +186,24 @@ class Game():
         
 
         def split_hand(self):
-            pass
+            hand = self.game_state.get_current_hand()
+            if not hand.is_splittable():
+                raise RuntimeError(f'Trying to split unsplittable hand: {hand}')
+            
+            # remove card from first hand and create new hand with that card
+            card_to_split = hand.cards.pop()
+            new_hand = Hand()
+            new_hand.cards.append(card_to_split)
+
+            # draw one new card for each of the hands
+            hand.draw_card(self.shoe)
+            new_hand.draw_card(self.shoe)
+
+            # add new hand to list of player hands
+            self.game_state.player_hands.append(new_hand)
+            
 
         def evaluate_hands(self) -> list[int]:
-            pass
-
-        def update_game_state(self):
-            # call game_state.update_hands
             pass
 
         def draw_dealer(self):
