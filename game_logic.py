@@ -20,10 +20,16 @@ POINT_VALUES = {
     cards.CardValues.King: 10
 }
 
-class UserActions(Enum):
+
+class UserActionsHand(Enum):
     DRAW = 1
     HOLD = 2
     SPLIT = 3
+
+
+class UserActionsRoundEnd(Enum):
+    CONTINUE = 1
+    EXIT = 2
 
 
 class Hand():
@@ -89,6 +95,11 @@ class GameState():
         self.dealer_hand = None
         self.current_hand = -1
 
+    def update_hands(self, player_hands: list[Hand], dealer_hand: Hand) -> None:
+        self.player_hands = player_hands
+        self.dealer_hand = dealer_hand
+
+
 
 class Game():   
     
@@ -114,61 +125,75 @@ class Game():
             # self.UI.money = self.money    
 
         
-    class Round():
-
-        # TODO: Move to UI and define game_Logic constants as return values
-        PLAYER_CHOICES_WITHOUT_SPLIT = ['1: Draw', '2: Hold']
-        PLAYER_CHOICES_WITH_SPLIT = ['1: Draw', '2: Hold', '3: Split']
+    class Round():        
 
         def __init__(self, game_state: GameState, user_interface: UserInterface, shoe: cards.Deck = None) -> None:
             # a player can have several hands when he splits, the dealer always has 1 hand
-            self.player_hands = [Hand()]
-            self.dealer_hand = Hand()
+            player_hands = [Hand()]
+            dealer_hand = Hand()
             self.shoe = shoe
             self.game_state = game_state
             self.ui = user_interface
             
-            self.player_hands[0].draw_card(self.shoe)
-            self.dealer_hand.draw_card(self.shoe)
-            self.player_hands[0].draw_card(self.shoe)
-            
+            player_hands[0].draw_card(self.shoe)
+            dealer_hand.draw_card(self.shoe)
+            player_hands[0].draw_card(self.shoe)
+          
             # The dealer would get his 2nd card upside down at this point, but it does not matter if
             # he draws it now or later (during play()).
             # Drawing it later also allows to use standard __str__ method the dealer's hand 
             # self.dealer_hand.draw_card(self.shoe)
 
-        def play(self) -> Tuple[bool, int]:                   
-            # self.UI.update()
-            print("Player: ", self.player_hands[0])
-            print("Dealer: ", self.dealer_hand)
+            self.game_state.update_hands(self.player_hands, self.dealer_hand)
 
-            for player_hand in self.player_hands:
-                # self.UI.user_input()
+
+        def play(self) -> Tuple[bool, int]:                   
+            self.game_state.current_hand = 0
+                    
+            # iterate over each hand (list of hands can grow when splitting)
+            while self.game_state.current_hand < len(self.game_state.player_hands):
                 hand_over = False
+                player_hand = self.game_state.player_hands[self.game_state.current_hand]
 
                 while not hand_over:
+                    self.ui.show_hand(self.game_state)
+                    user_input = self.ui.get_user_input_hand(self.game_state)
 
-                    if player_hand.is_splittable():
-                        choices = self.PLAYER_CHOICES_WITH_SPLIT
+                    if user_input == UserActionsHand.DRAW:
+                        player_hand.draw_card(self.shoe)
+                        hand_over = player_hand.is_bust()
+                    elif user_input == UserActionsHand.HOLD:
+                        hand_over = True
+                    elif user_input == UserActionsHand.SPLIT:
+                        self.split_hand()
                     else:
-                        choices = self.PLAYER_CHOICES_WITHOUT_SPLIT
-                        
-                    print(*choices, sep = '\n')
-                    while True:
-                        choice = int(input())
+                        raise RuntimeError('Unexpected user action')
+                    
+                    self.update_game_state()
+                
+                self.ui.hand_summary()
+                    
+            self.draw_dealer()
+            money_won = sum(self.evaluate_hands())
+            self.ui.round_summary()
 
-                pass    
+            user_input = self.ui.get_user_input_round_end()
+            continue_game = (user_input == UserActionsRoundEnd.CONTINUE)
 
-            return False, 0
+            return continue_game, money_won
         
 
         def split_hand(self):
             pass
 
-        def evaluate_hands(self):
+        def evaluate_hands(self) -> list[int]:
             pass
 
         def update_game_state(self):
+            # call game_state.update_hands
+            pass
+
+        def draw_dealer(self):
             pass
 
 
