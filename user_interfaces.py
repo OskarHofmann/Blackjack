@@ -36,8 +36,9 @@ class UserInterface(ABC):
 
 class ConsoleOutput(UserInterface):
 
-    PLAYER_CHOICES_WITHOUT_SPLIT = ['1: Draw', '2: Hold']
-    PLAYER_CHOICES_WITH_SPLIT = ['1: Draw', '2: Hold', '3: Split']
+    # order is fixed as of Python 3.7+
+    PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold'}
+    PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold', UserActionsHand.SPLIT: 'Split'}
 
     def update(self):
         os.system('cls')
@@ -60,4 +61,7 @@ class ConsoleOutput(UserInterface):
         else:
             choices = self.PLAYER_CHOICES_WITHOUT_SPLIT        
         print(*choices, sep = '\n')
+
+    def print_choices(hand_is_splittable: bool) -> None:
+        pass
         
