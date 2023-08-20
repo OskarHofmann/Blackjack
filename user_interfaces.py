@@ -1,6 +1,13 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 import os
-from game_logic import UserActionsHand, UserActionsRoundEnd, GameState
+from user_actions import UserActionsHand, UserActionsRoundEnd
+
+# avoid circular import, GameState is only used as an annotation
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from game_logic import GameState
+
 
 class UserInterface(ABC):    
 
@@ -60,8 +67,20 @@ class ConsoleOutput(UserInterface):
             choices = self.PLAYER_CHOICES_WITH_SPLIT
         else:
             choices = self.PLAYER_CHOICES_WITHOUT_SPLIT        
-        print(*choices, sep = '\n')
+        for choice, text in choices.items():
+            print(f'{choice.value}: {text}')
 
-    def print_choices(hand_is_splittable: bool) -> None:
+    def game_summary(self, game_state: GameState) -> None:
         pass
-        
+
+    def get_user_input_round_end(self, game_state: GameState) -> UserActionsRoundEnd:
+        pass
+
+    def hand_summary(self, game_state: GameState) -> None:
+        pass
+
+    def round_summary(self, game_state: GameState) -> None:
+        pass
+    
+
+
