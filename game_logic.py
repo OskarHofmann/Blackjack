@@ -1,8 +1,8 @@
 import cards
-from enum import Enum, auto
 from typing import Tuple, Optional
 from dataclasses import dataclass
 from user_interfaces import UserInterface
+from user_actions import UserActionsHand, UserActionsRoundEnd
 import numpy as np
 
 POINT_VALUES = {
@@ -20,17 +20,6 @@ POINT_VALUES = {
     cards.CardValues.Queen: 10,
     cards.CardValues.King: 10
 }
-
-
-class UserActionsHand(Enum):
-    DRAW = 1
-    HOLD = 2
-    SPLIT = 3
-
-
-class UserActionsRoundEnd(Enum):
-    CONTINUE = 1
-    EXIT = 2
 
 
 class Hand():
@@ -150,7 +139,8 @@ class Game():
             # Drawing it later also allows to use standard __str__ method the dealer's hand 
             # self.dealer_hand.draw_card(self.shoe)
 
-            self.game_state.update_hands(self.player_hands, self.dealer_hand)
+            self.game_state.player_hands = player_hands
+            self.game_state.dealer_hand = dealer_hand
 
 
         def play(self) -> Tuple[bool, int]:                   
