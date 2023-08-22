@@ -57,16 +57,17 @@ class ConsoleOutput(UserInterface):
         print("Dealer: ", game_state.dealer_hand)
 
     def get_user_input_hand(self, game_state: GameState) -> UserActionsHand:
-        self.show_player_options_hand(game_state)
+        hand_is_splittable = game_state.player_hands[game_state.current_hand].is_splittable()
+        self.show_player_options_hand(hand_is_splittable)
+
         while True:
             choice = int(input())
-        #TODO move check for splittable hand into this function as it is required to check for valid inputs
         #TODO: Handle non int inputs and check for valid input
 
     #TODO: use boolean is_splittable as input only
-    def show_player_options_hand(self, game_state: GameState) -> None:
+    def show_player_options_hand(self, hand_is_splittable: bool) -> None:
         # determine if hand is splittable and determine if the option to split should be shown
-        if game_state.player_hands[game_state.current_hand].is_splittable():
+        if hand_is_splittable:
             choices = self.PLAYER_CHOICES_WITH_SPLIT
         else:
             choices = self.PLAYER_CHOICES_WITHOUT_SPLIT        
