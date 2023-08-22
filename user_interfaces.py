@@ -4,7 +4,7 @@ import os
 from user_actions import UserActionsHand, UserActionsRoundEnd
 
 # avoid circular import, GameState is only used as an annotation
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 if TYPE_CHECKING:
     from game_logic import GameState
 
@@ -46,6 +46,8 @@ class ConsoleOutput(UserInterface):
     # order is fixed as of Python 3.7+
     PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold'}
     PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold', UserActionsHand.SPLIT: 'Split'}
+    
+    wrong_input_text = "Please input a number based on the option above."
 
     def update(self):
         os.system('cls')
@@ -56,21 +58,31 @@ class ConsoleOutput(UserInterface):
         print("Player: ", game_state.player_hands[game_state.current_hand])
         print("Dealer: ", game_state.dealer_hand)
 
+
     def get_user_input_hand(self, game_state: GameState) -> UserActionsHand:
-        hand_is_splittable = game_state.player_hands[game_state.current_hand].is_splittable()
-        self.show_player_options_hand(hand_is_splittable)
+        if game_state.player_hands[game_state.current_hand].is_splittable():
+            valid_choices = self.PLAYER_CHOICES_WITH_SPLIT
+        else:
+            valid_choices = self.PLAYER_CHOICES_WITHOUT_SPLIT
+
+        self.show_player_options_hand(valid_choices)
+        print(valid_choices.keys())
 
         while True:
-            choice = int(input())
-        #TODO: Handle non int inputs and check for valid input
+            try:
+                choice = int(input())
+            except ValueError:
+                print(self.wrong_input_text)
+                continue
+            
+            if choice in valid_choices.keys():
+                return UserActionsHand(choice)
+            else:
+                print(self.wrong_input_text)
+                continue # just for clarity, could be left out
 
-    #TODO: use boolean is_splittable as input only
-    def show_player_options_hand(self, hand_is_splittable: bool) -> None:
-        # determine if hand is splittable and determine if the option to split should be shown
-        if hand_is_splittable:
-            choices = self.PLAYER_CHOICES_WITH_SPLIT
-        else:
-            choices = self.PLAYER_CHOICES_WITHOUT_SPLIT        
+
+    def show_player_options_hand(self, choices: Dict[UserActionsHand, str]) -> None:           
         for choice, text in choices.items():
             print(f'{choice.value}: {text}')
 
