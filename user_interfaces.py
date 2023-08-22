@@ -66,7 +66,6 @@ class ConsoleOutput(UserInterface):
             valid_choices = self.PLAYER_CHOICES_WITHOUT_SPLIT
 
         self.show_player_options_hand(valid_choices)
-        print(valid_choices.keys())
 
         while True:
             try:
