@@ -1,12 +1,12 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class UserActionsHand(Enum):
+class UserActionsHand(IntEnum):
     DRAW = 1
     HOLD = 2
     SPLIT = 3
 
 
-class UserActionsRoundEnd(Enum):
+class UserActionsRoundEnd(IntEnum):
     CONTINUE = 1
     EXIT = 2
