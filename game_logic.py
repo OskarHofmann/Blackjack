@@ -66,11 +66,11 @@ class Hand():
     
 
     def is_bust(self) -> bool:
-        return (self.get_points > 21)
+        return (self.get_points() > 21)
     
     
     def is_blackjack(self) -> bool:
-        return ((len(self.cards) == 2) and (self.get_points == 21))
+        return ((len(self.cards) == 2) and (self.get_points() == 21))
 
 
 @dataclass
