@@ -3,7 +3,7 @@ from enum import IntEnum
 
 class UserActionsHand(IntEnum):
     DRAW = 1
-    HOLD = 2
+    STAND = 2
     SPLIT = 3
 
 
