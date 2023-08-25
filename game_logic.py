@@ -152,6 +152,9 @@ class Game():
                 hand_over = False
                 player_hand = self.game_state.get_current_hand()
 
+                if player_hand.is_blackjack():
+                    hand_over = True
+
                 while not hand_over:
                     self.ui.show_hand(self.game_state)
                     user_input = self.ui.get_user_input_hand(self.game_state)
@@ -166,17 +169,17 @@ class Game():
                     else:
                         raise RuntimeError('Unexpected user action')
                     
-                self.ui.hand_summary()
+                self.ui.hand_summary(self.game_state)
                 self.game_state.current_hand += 1
                     
             self.draw_dealer()
-            money_won = sum(self.evaluate_hands())
-            self.ui.round_summary(self.game_state)
+            hand_results = self.evaluate_hands()
+            self.ui.round_summary(self.game_state, hand_results)
 
             user_input = self.ui.get_user_input_round_end()
             continue_game = (user_input == UserActionsRoundEnd.CONTINUE)
 
-            return continue_game, money_won
+            return continue_game, sum(hand_results)
         
 
         def split_hand(self):
@@ -205,15 +208,15 @@ class Game():
             for hand in self.game_state.player_hands:
                 # bust hand always looses player bet
                 if hand.is_bust():
-                    winning = -1
+                    winnings = -1
                 # Blackjack without dealer Blackjack wins 3:2
                 elif hand.is_blackjack() and not dealer_hand.is_blackjack():
                     winnings = 1.5
                 # player wins when dealer is bust (if player is also bust, player looses, but already covered in previous if statement)
                 elif dealer_hand.is_bust():
-                    winning = 1
+                    winnings = 1
                 # dealer Blackjack wins if player does not have his own blackjack
-                elif  dealer_hand.is_blackjack and not hand.is_blackjack():
+                elif  dealer_hand.is_blackjack() and not hand.is_blackjack():
                     winnings = -1
                 # otherwise compare point values (both player and dealer having a Blackjack is the same as both just having 21)
                 else:
@@ -235,7 +238,7 @@ class Game():
                 return
             
             dealer_hand = self.game_state.dealer_hand
-            while not (dealer_hand.is_bust() or dealer_hand >= 17):
+            while not (dealer_hand.is_bust() or dealer_hand.get_points() >= 17):
                 dealer_hand.draw_card()
 
 
