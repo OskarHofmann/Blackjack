@@ -37,7 +37,7 @@ class UserInterface(ABC):
         ...
 
     @abstractmethod
-    def get_user_input_round_end(self, game_state: GameState) -> UserActionsRoundEnd:
+    def get_user_input_round_end(self) -> UserActionsRoundEnd:
         ...
 
     
@@ -47,6 +47,8 @@ class ConsoleOutput(UserInterface):
     # order is fixed as of Python 3.7+
     PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand'}
     PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand', UserActionsHand.SPLIT: 'Split'}
+
+    PLAYER_CHOICES_ROUND_END ={UserActionsRoundEnd.CONTINUE: 'Continue', UserActionsRoundEnd.EXIT: 'Exit'}
     
     WRONG_INPUT_TEXT = "Please input a number based on the option above."
 
@@ -97,10 +99,31 @@ class ConsoleOutput(UserInterface):
             print(f'{choice.value}: {text}')
 
     def game_summary(self, game_state: GameState) -> None:
-        pass
+        os.system('cls')
+        print("Game over!")
+        print(f"Total money won/lost: {game_state.money}")
 
-    def get_user_input_round_end(self, game_state: GameState) -> UserActionsRoundEnd:
-        pass
+    def get_user_input_round_end(self) -> UserActionsRoundEnd:
+        self.show_player_options_round_end()
+
+        while True:
+            try:
+                choice = int(input())
+            except ValueError:
+                print(self.WRONG_INPUT_TEXT)
+                continue
+            
+            if choice in self.PLAYER_CHOICES_ROUND_END.keys():
+                return UserActionsRoundEnd(choice)
+            else:
+                print(self.WRONG_INPUT_TEXT)
+                continue # just for clarity, could be left out
+
+
+    def show_player_options_round_end(self) -> None:
+        for choice, text in self.PLAYER_CHOICES_ROUND_END.items():
+            print(f'{choice.value}: {text}')
+        
 
     def hand_summary(self, game_state: GameState) -> None:
         # if only one hand was played (no split hand), there is no need to specify the number of the hand
@@ -115,7 +138,7 @@ class ConsoleOutput(UserInterface):
         elif player_hand.is_blackjack():
             print(self.HAND_IS_BLACKJACK_TEXT)
         
-        sleep(1)
+        sleep(2)
 
     def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
         os.system('cls')
