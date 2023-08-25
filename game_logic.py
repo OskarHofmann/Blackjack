@@ -80,6 +80,7 @@ class GameState():
     dealer_hand: Optional[Hand] = None
     current_hand: int = -1
 
+
     def reset_hands(self) -> None:
         self.player_hands = None
         self.dealer_hand = None
@@ -216,7 +217,7 @@ class Game():
                     winnings = -1
                 # otherwise compare point values (both player and dealer having a Blackjack is the same as both just having 21)
                 else:
-                    winnings = 1 * np.sign(hand.get_points() - dealer_hand.get_points()) # +1 if player > dealer, -1 if player < dealer, 0 otherweise
+                    winnings = 1 * np.sign(hand.get_points() - dealer_hand.get_points()) # +1 if player > dealer, -1 if player < dealer, 0 otherwise
             
                 results.append(winnings)
             
