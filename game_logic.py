@@ -173,6 +173,10 @@ class Game():
                         hand_over = (player_hand.is_bust() or player_hand.is_blackjack())
                     elif user_input == UserActionsHand.STAND:
                         hand_over = True
+                    elif user_input == UserActionsHand.DOUBLE_DOWN:
+                        player_hand.draw_card(self.shoe)
+                        self.game_state.bets[self.game_state.current_hand] *= 2
+                        hand_over = True
                     elif user_input == UserActionsHand.SPLIT:
                         self.split_hand()
                     else:
@@ -214,9 +218,10 @@ class Game():
         def evaluate_hands(self) -> list[float]:
             results = []
             dealer_hand = self.game_state.dealer_hand
+            bets = self.game_state.bets
             
             # go through all rules for BlackJack regarding winning/loosing
-            for hand in self.game_state.player_hands:
+            for hand, bet in zip(self.game_state.player_hands, bets):
                 # bust hand always looses player bet
                 if hand.is_bust():
                     winnings = -1
@@ -233,7 +238,7 @@ class Game():
                 else:
                     winnings = 1 * np.sign(hand.get_points() - dealer_hand.get_points()) # +1 if player > dealer, -1 if player < dealer, 0 otherwise
             
-                results.append(winnings)
+                results.append(winnings*bet)
             
             return results
         
