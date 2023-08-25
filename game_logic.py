@@ -83,12 +83,14 @@ class GameState():
     player_hands: Optional[list[Hand]] = None
     dealer_hand: Optional[Hand] = None
     current_hand: int = -1
+    bets: Optional[list[int]] = None
 
 
     def reset_hands(self) -> None:
         self.player_hands = None
         self.dealer_hand = None
         self.current_hand = -1
+        self.bets = None
 
     # def update_hands(self, player_hands: list[Hand], dealer_hand: Hand) -> None:
     #     self.player_hands = player_hands
@@ -134,6 +136,9 @@ class Game():
             self.shoe = shoe
             self.game_state = game_state
             self.ui = user_interface
+
+            self.bet = 1 # could be a variable input in the future
+            self.game_state.bets = [self.bets]
             
             player_hands[0].draw_card(self.shoe)
             dealer_hand.draw_card(self.shoe)
@@ -168,7 +173,7 @@ class Game():
                         hand_over = (player_hand.is_bust() or player_hand.is_blackjack())
                     elif user_input == UserActionsHand.STAND:
                         hand_over = True
-                    elif user_input == UserActionsHand.SPLIT:
+                    elif user_input == UserActionsHand.SPLIT and player_hand.is_splittable():
                         self.split_hand()
                     else:
                         raise RuntimeError('Unexpected user action')
