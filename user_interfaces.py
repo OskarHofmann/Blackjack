@@ -5,7 +5,7 @@ from user_actions import UserActionsHand, UserActionsRoundEnd
 from time import sleep
 
 # avoid circular import, GameState is only used as an annotation
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict
 if TYPE_CHECKING:
     from game_logic import GameState
 
@@ -21,7 +21,7 @@ class UserInterface(ABC):
         ...
 
     @abstractmethod
-    def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
+    def round_summary(self, game_state: GameState, money_won: list[int]) -> None:
         ... 
 
     @abstractmethod
@@ -143,7 +143,7 @@ class ConsoleOutput(UserInterface):
         sleep(2)
 
 
-    def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
+    def round_summary(self, game_state: GameState, money_won: list[int]) -> None:
         os.system('cls')
         print(self.END_OF_ROUND_TEXT)
         print("")
