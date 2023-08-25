@@ -50,7 +50,7 @@ class ConsoleOutput(UserInterface):
 
     PLAYER_CHOICES_ROUND_END ={UserActionsRoundEnd.CONTINUE: 'Continue', UserActionsRoundEnd.EXIT: 'Exit'}
     
-    WRONG_INPUT_TEXT = "Please input a number based on the option above."
+    WRONG_INPUT_TEXT = "Please input a number based on the options above."
 
     HAND_IS_BUST_TEXT = "Over 21! Hand is bust. All bets are lost."
     HAND_IS_BLACKJACK_TEXT = "Blackjack! Player wins 3:2."
@@ -141,7 +141,7 @@ class ConsoleOutput(UserInterface):
             print(self.HAND_IS_BLACKJACK_TEXT)
         
         sleep(2)
-        
+
 
     def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
         os.system('cls')
