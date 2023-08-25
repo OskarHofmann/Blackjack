@@ -5,7 +5,7 @@ from user_actions import UserActionsHand, UserActionsRoundEnd
 from time import sleep
 
 # avoid circular import, GameState is only used as an annotation
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from game_logic import GameState
 
@@ -21,7 +21,7 @@ class UserInterface(ABC):
         ...
 
     @abstractmethod
-    def round_summary(self, game_state: GameState) -> None:
+    def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
         ... 
 
     @abstractmethod
@@ -54,6 +54,9 @@ class ConsoleOutput(UserInterface):
     HAND_IS_BLACKJACK_TEXT = "Blackjack! Player wins 3:2."
 
     END_OF_ROUND_TEXT = "End of round!"
+    PLAYER_WINS_TEXT = "Player wins. Money won: "
+    PLAYER_LOOSES_TEXT = "Player looses. Money lost: "
+    TIE_TEXT = "Tie! No money won or lost."
     
 
     # def update(self):
@@ -112,13 +115,27 @@ class ConsoleOutput(UserInterface):
         elif player_hand.is_blackjack():
             print(self.HAND_IS_BLACKJACK_TEXT)
         
-        sleep(0.5)
+        sleep(1)
 
-    def round_summary(self, game_state: GameState) -> None:
+    def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
+        os.system('cls')
         print(self.END_OF_ROUND_TEXT)
         print("")
-        for hand in game_state.player_hands:
-            
+        print("Dealer: ", game_state.dealer_hand, "\n")
+        for index, hand in enumerate(game_state.player_hands):
+            print(f"Player hand #{index + 1}: ", hand)
+            earnings = money_won[index]
+            if earnings > 0:
+                print(self.PLAYER_WINS_TEXT, earnings)
+            elif earnings < 0:
+                print(self.PLAYER_LOOSES_TEXT, earnings*-1)
+            else:
+                print(self.TIE_TEXT)
+            print("")
+            sleep(1)
+
+
+
 
     
 
