@@ -244,10 +244,10 @@ class Game():
         
 
         def draw_dealer(self) -> None:
-            # check if dealer even has to draw (any hand that is neither bust nor blackjack still in game)
+            # check if dealer even has to draw (any hand that is not bust)
             dealer_draws = False
             for hand in self.game_state.player_hands:
-                if not (hand.is_blackjack() or hand.is_bust()):
+                if not hand.is_bust():
                     dealer_draws = True
                     break
             # end function if hand outcome does not depend on dealer draw
