@@ -98,10 +98,12 @@ class ConsoleOutput(UserInterface):
         for choice, text in choices.items():
             print(f'{choice.value}: {text}')
 
+
     def game_summary(self, game_state: GameState) -> None:
         os.system('cls')
         print("Game over!")
         print(f"Total money won/lost: {game_state.money}")
+
 
     def get_user_input_round_end(self) -> UserActionsRoundEnd:
         self.show_player_options_round_end()
@@ -139,6 +141,7 @@ class ConsoleOutput(UserInterface):
             print(self.HAND_IS_BLACKJACK_TEXT)
         
         sleep(2)
+        
 
     def round_summary(self, game_state: GameState, money_won: List[int]) -> None:
         os.system('cls')

@@ -225,6 +225,7 @@ class Game():
                 results.append(winnings)
             
             return results
+        
 
         def draw_dealer(self) -> None:
             # check if dealer even has to draw (any hand that is neither bust nor blackjack still in game)
