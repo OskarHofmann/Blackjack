@@ -118,7 +118,7 @@ class Game():
             self.game_state.reset_hands()
             # self.UI.money = self.money    
         
-        self.user_interface.game_summary()
+        self.user_interface.game_summary(self.game_state)
 
         
     class Round():        
