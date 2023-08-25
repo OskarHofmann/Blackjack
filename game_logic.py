@@ -158,7 +158,7 @@ class Game():
                     if user_input == UserActionsHand.DRAW:
                         player_hand.draw_card(self.shoe)
                         hand_over = (player_hand.is_bust() or player_hand.is_blackjack())
-                    elif user_input == UserActionsHand.HOLD:
+                    elif user_input == UserActionsHand.STAND:
                         hand_over = True
                     elif user_input == UserActionsHand.SPLIT:
                         self.split_hand()
@@ -170,7 +170,7 @@ class Game():
                     
             self.draw_dealer()
             money_won = sum(self.evaluate_hands())
-            self.ui.round_summary()
+            self.ui.round_summary(self.game_state)
 
             user_input = self.ui.get_user_input_round_end()
             continue_game = (user_input == UserActionsRoundEnd.CONTINUE)
@@ -222,8 +222,23 @@ class Game():
             
             return results
 
-        def draw_dealer(self):
-            pass
+        def draw_dealer(self) -> None:
+            # check if dealer even has to draw (any hand that is neither bust nor blackjack still in game)
+            dealer_draws = False
+            for hand in self.game_state.player_hands:
+                if not (hand.is_blackjack() or hand.is_bust()):
+                    dealer_draws = True
+                    break
+            # end function if hand outcome does not depend on dealer draw
+            if not dealer_draws:
+                return
+            
+            dealer_hand = self.game_state.dealer_hand
+            while not (dealer_hand.is_bust() or dealer_hand >= 17):
+                dealer_hand.draw_card()
+
+
+
 
 
 
