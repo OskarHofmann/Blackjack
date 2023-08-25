@@ -45,9 +45,7 @@ class UserInterface(ABC):
 class ConsoleOutput(UserInterface):
 
     # order is fixed as of Python 3.7+
-    PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand'}
-    PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand', UserActionsHand.SPLIT: 'Split'}
-
+    PLAYER_CHOICES_HAND = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand', UserActionsHand.DOUBLE_DOWN: 'Double Down', UserActionsHand.SPLIT: 'Split'}
     PLAYER_CHOICES_ROUND_END ={UserActionsRoundEnd.CONTINUE: 'Continue', UserActionsRoundEnd.EXIT: 'Exit'}
     
     WRONG_INPUT_TEXT = "Please input a number based on the options above."
@@ -73,10 +71,13 @@ class ConsoleOutput(UserInterface):
 
 
     def get_user_input_hand(self, game_state: GameState) -> UserActionsHand:
-        if game_state.player_hands[game_state.current_hand].is_splittable():
-            valid_choices = self.PLAYER_CHOICES_WITH_SPLIT
-        else:
-            valid_choices = self.PLAYER_CHOICES_WITHOUT_SPLIT
+        hand = game_state.get_current_hand()
+        valid_choices = {}
+        for key, value in self.PLAYER_CHOICES_HAND.items():
+            if (key == UserActionsHand.DOUBLE_DOWN and not hand.can_be_doubled()) or \
+               (key == UserActionsHand.SPLIT and not hand.is_splittable()):
+                continue
+            valid_choices[key]  = value
 
         self.show_player_options_hand(valid_choices)
 
