@@ -39,23 +39,37 @@ class Card:
 
 class Deck:
     def __init__(self, shuffle: bool = True) -> None:
+        self._create_new_deck(shuffle)
+
+    def _create_new_deck(self, shuffle: bool = True) -> None:
         self.cards = [Card(suit, value) for suit in CardSuits for value in CardValues]
         if shuffle:
             random.shuffle(self.cards)
 
     def draw(self) -> Card:
-        return self.cards.pop()
+        try:
+            return self.cards.pop()
+        except IndexError:
+            self._create_new_deck()
+            return self.cards.pop()
+
 
 # several decks shuffled together (inherits draw function from Deck class)
 class Shoe(Deck):
-    def __init__(self, number_of_decks: int = 8) -> None:
-        self.MAX_CARDS = number_of_decks * 52
+    def __init__(self, number_of_decks: int = 8, shuffle: bool = True) -> None:
+        self.number_of_decks = number_of_decks
+        self._create_new_deck(shuffle)
+        
+        
+    def _create_new_deck(self, shuffle: bool = True) -> None:
         self.cards = []
-        for _ in range(number_of_decks):
+        for _ in range(self.number_of_decks):
             # create unshuffled deck as the whole shoe is shuffled later
             deck = Deck(shuffle = False) 
             self.cards += deck.cards
-        random.shuffle(self.cards)
+        if shuffle:
+            random.shuffle(self.cards)
+    
     
 # get independent random cards without tracking a whole deck/shoe (equal to a shoe with infinite decks)
 def get_random_card() -> Card:
