@@ -4,7 +4,8 @@ from enum import IntEnum
 class UserActionsHand(IntEnum):
     DRAW = 1
     STAND = 2
-    SPLIT = 3
+    DOUBLE_DOWN = 3
+    SPLIT = 4
 
 
 class UserActionsRoundEnd(IntEnum):
