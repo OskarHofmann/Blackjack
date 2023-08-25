@@ -173,7 +173,7 @@ class Game():
                         hand_over = (player_hand.is_bust() or player_hand.is_blackjack())
                     elif user_input == UserActionsHand.STAND:
                         hand_over = True
-                    elif user_input == UserActionsHand.SPLIT and player_hand.is_splittable():
+                    elif user_input == UserActionsHand.SPLIT:
                         self.split_hand()
                     else:
                         raise RuntimeError('Unexpected user action')
@@ -207,6 +207,8 @@ class Game():
 
             # add new hand to list of player hands
             self.game_state.player_hands.append(new_hand)
+            # use bet of current hand as bet for new hand
+            self.game_state.bets.append(self.game_state.bets[self.game_state.current_hand])
 
 
         def evaluate_hands(self) -> list[float]:
