@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import os
 from user_actions import UserActionsHand, UserActionsRoundEnd
+from time import sleep
 
 # avoid circular import, GameState is only used as an annotation
 from typing import TYPE_CHECKING, Dict
@@ -44,17 +45,24 @@ class UserInterface(ABC):
 class ConsoleOutput(UserInterface):
 
     # order is fixed as of Python 3.7+
-    PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold'}
-    PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.HOLD: 'Hold', UserActionsHand.SPLIT: 'Split'}
+    PLAYER_CHOICES_WITHOUT_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand'}
+    PLAYER_CHOICES_WITH_SPLIT = {UserActionsHand.DRAW: 'Draw', UserActionsHand.STAND: 'Stand', UserActionsHand.SPLIT: 'Split'}
     
-    wrong_input_text = "Please input a number based on the option above."
+    WRONG_INPUT_TEXT = "Please input a number based on the option above."
 
-    def update(self):
-        os.system('cls')
-        print("Player Hand:", self.game_stats["player hands"][-1])
-        print("Dealer Hand:", self.game_stats["dealer hand"])
+    HAND_IS_BUST_TEXT = "Over 21! Hand is bust. All bets are lost."
+    HAND_IS_BLACKJACK_TEXT = "Blackjack! Player wins 3:2."
+
+    END_OF_ROUND_TEXT = "End of round!"
+    
+
+    # def update(self):
+    #     os.system('cls')
+    #     print("Player Hand:", self.game_stats["player hands"][-1])
+    #     print("Dealer Hand:", self.game_stats["dealer hand"])
 
     def show_hand(self, game_state: GameState) -> None:
+        os.system('cls')
         print("Player: ", game_state.player_hands[game_state.current_hand])
         print("Dealer: ", game_state.dealer_hand)
 
@@ -71,13 +79,13 @@ class ConsoleOutput(UserInterface):
             try:
                 choice = int(input())
             except ValueError:
-                print(self.wrong_input_text)
+                print(self.WRONG_INPUT_TEXT)
                 continue
             
             if choice in valid_choices.keys():
                 return UserActionsHand(choice)
             else:
-                print(self.wrong_input_text)
+                print(self.WRONG_INPUT_TEXT)
                 continue # just for clarity, could be left out
 
 
@@ -92,10 +100,26 @@ class ConsoleOutput(UserInterface):
         pass
 
     def hand_summary(self, game_state: GameState) -> None:
-        pass
+        # if only one hand was played (no split hand), there is no need to specify the number of the hand
+        if len(game_state.player_hands) > 1:
+            print(f'End of hand {game_state.current_hand + 1} :')
+        self.show_hand(game_state)
+
+        # End of hand text for hands that are bust or blackjack
+        player_hand = game_state.player_hands[game_state.current_hand]
+        if player_hand.is_bust():
+            print(self.HAND_IS_BUST_TEXT)
+        elif player_hand.is_blackjack():
+            print(self.HAND_IS_BLACKJACK_TEXT)
+        
+        sleep(0.5)
 
     def round_summary(self, game_state: GameState) -> None:
-        pass
+        print(self.END_OF_ROUND_TEXT)
+        print("")
+        for hand in game_state.player_hands:
+            
+
     
 
 
