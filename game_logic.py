@@ -71,6 +71,10 @@ class Hand():
     
     def is_blackjack(self) -> bool:
         return ((len(self.cards) == 2) and (self.get_points() == 21))
+    
+    # "Double down on any two"
+    def can_be_doubled(self) -> bool:
+        return len(self.cards) == 2
 
 
 @dataclass
