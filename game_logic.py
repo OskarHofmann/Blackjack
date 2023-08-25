@@ -138,7 +138,7 @@ class Game():
             self.ui = user_interface
 
             self.bet = 1 # could be a variable input in the future
-            self.game_state.bets = [self.bets]
+            self.game_state.bets = [self.bet]
             
             player_hands[0].draw_card(self.shoe)
             dealer_hand.draw_card(self.shoe)
