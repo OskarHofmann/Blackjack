@@ -57,6 +57,10 @@ class ConsoleOutput(UserInterface):
     PLAYER_WINS_TEXT = "Player wins. Money won: "
     PLAYER_LOOSES_TEXT = "Player looses. Money lost: "
     TIE_TEXT = "Tie! No money won or lost."
+
+    def __init__(self, hand_sumary_delay_seconds = 2, round_summary_delay_seconds = 1):
+        self.hand_summary_delay_seconds = hand_sumary_delay_seconds
+        self.round_summary_delay_seconds = round_summary_delay_seconds
     
 
     # def update(self):
@@ -141,7 +145,7 @@ class ConsoleOutput(UserInterface):
         elif player_hand.is_blackjack():
             print(self.HAND_IS_BLACKJACK_TEXT)
         
-        sleep(2)
+        sleep(self.hand_summary_delay_seconds)
 
 
     def round_summary(self, game_state: GameState, money_won: list[int]) -> None:
@@ -159,7 +163,7 @@ class ConsoleOutput(UserInterface):
             else:
                 print(self.TIE_TEXT)
             print("")
-            sleep(1)
+            sleep(self.round_summary_delay_seconds)
 
 
 
